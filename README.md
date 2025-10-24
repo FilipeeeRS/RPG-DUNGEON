@@ -7,3 +7,7 @@ integrantes:
 
 Orientadores:
 - Professor: André Luis dos Reis de Carvalho
+
+TEMA DO PROJETO:  JOGO de RPG com interface em texto em JAVA
+-------------------------------
+
