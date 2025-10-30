@@ -9,6 +9,6 @@ public class Boss extends Inimigo {
         super(nome, nivel, hp, ataque, defesa);
     }
 
-    // (Opcional) Podemos adicionar um método especial aqui
-    // public void ataqueEspecial() { ... }
+    // talvez adicionar um métod0 aqui (Habilidade)
+    // public void ...() { ... }
 }
