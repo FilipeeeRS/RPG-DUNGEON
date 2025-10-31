@@ -14,8 +14,11 @@ public class Inimigo extends Personagem {
         this.Defesa = defesa;
     }
 
-    // Construtor de cópia [cite: 35]
+    // Construtor de cópia
     public Inimigo(Inimigo original) {
-        super(original); // construtor de cópia do Personagem
+        super(original);
+    }
+    @Override
+    public void usarHabilidadeEspecial(Inimigo inimigo) {
     }
 }

@@ -27,6 +27,7 @@ public class Inventario {
         }
         itens.add(novoItem); // se nao tinha, adiciona o novo item no inventario
     }
+
     // Remove quantidade. Se zerar, remove o item da lista
     public void removerItem(Item item, int quantidade) {
         for (int i = 0; i < itens.size(); i++) {
@@ -47,9 +48,9 @@ public class Inventario {
 
     public String listarItens() {
         if(itens.isEmpty()) {
-            return "Inventário vazio.";
+            return "\nInventário vazio.";
         }
-        StringBuilder sb = new StringBuilder("\n=== INVENTÁRIO ===\n");
+        StringBuilder sb = new StringBuilder("\n--- INVENTÁRIO ---");
         for (int i = 0; i < itens.size(); i++) {
             sb.append("(").append(i + 1).append(") ").append(itens.get(i).toString()).append("\n");
         }

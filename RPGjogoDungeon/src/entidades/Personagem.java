@@ -5,7 +5,7 @@ import itens.Item;
 import utilidades.Dado;
 import java.util.Scanner;
 
-// classe abstrata Personagem com atributos base
+// classe abstrata Personagem
 public abstract class Personagem {
 
     // atributos
@@ -19,6 +19,8 @@ public abstract class Personagem {
     protected boolean estaVivo;
     protected int xpAtual;
     protected int xpParaProximoNivel;
+    protected boolean habilidadeUsadaNestaBatalha;
+    public abstract void usarHabilidadeEspecial(Inimigo inimigo);
 
     // construtores
     public Personagem() {
@@ -26,6 +28,7 @@ public abstract class Personagem {
         this.estaVivo = true;
         this.xpAtual = 0;
         this.xpParaProximoNivel = 100;
+        this.habilidadeUsadaNestaBatalha = false;
     }
 
     // construtor de cópia
@@ -40,6 +43,7 @@ public abstract class Personagem {
         this.inventario = new Inventario(original.inventario);
         this.xpAtual = original.xpAtual;
         this.xpParaProximoNivel = original.xpParaProximoNivel;
+        this.habilidadeUsadaNestaBatalha = original.habilidadeUsadaNestaBatalha;
     }
 
     // getters e setters
@@ -66,18 +70,21 @@ public abstract class Personagem {
         Scanner leitor = new Scanner(System.in);
         System.out.println("--- BATALHA INICIADA ---");
 
-        while (this.estaVivo && inimigo.estaVivo) {
+        this.habilidadeUsadaNestaBatalha = false;
+        int defesaOriginalBatalha = this.Defesa;
 
+        while (this.estaVivo && inimigo.estaVivo) {
             // turno do jogador
             System.out.println("--- Seu Turno ---");
             System.out.println(this.nome + " [HP: " + this.pontosVida + "/" + this.maxPontosVida + "] vs " + inimigo.nome + " [HP: " + inimigo.pontosVida + "/" + inimigo.maxPontosVida + "]");
             System.out.println("(1) Atacar");
-            System.out.println("(2) Usar Item");
-            System.out.println("(3) Tentar Fugir");
+            System.out.println("(2) Habilidade Especial");
+            System.out.println("(3) Usar Item");
+            System.out.println("(4) Tentar Fugir");
 
             int escolha = 0;
-            while (escolha < 1 || escolha > 3) {
-                System.out.print("Digite 1, 2 ou 3: ");
+            while (escolha < 1 || escolha > 4) {
+                System.out.print("Digite 1, 2, 3 ou 4: ");
                 try {
                     escolha = Integer.parseInt(leitor.nextLine().trim());
                 } catch (Exception ignored) {}
@@ -88,10 +95,77 @@ public abstract class Personagem {
                 this.atacar(inimigo);
 
             } else if (escolha == 2) {
-                System.out.println(this.inventario.listarItens());
+                if (this.habilidadeUsadaNestaBatalha) {
+                    System.out.println("\nVocê já usou sua habilidade nesta batalha!\n");
+                    continue; // volta sem perder o turno
+                }
+                System.out.println("\n--- HABILIDADE ESPECIAL ---");
 
+                // descrição
+                if (this instanceof Guerreiro) {
+                    System.out.println("[ESCUDO DE IMPENETRÁVEL]: Aumenta sua Defesa em 10 nessa batalha.");
+                } else if (this instanceof Mago) {
+                    System.out.println("[BOLA DE FOGO]: Causa dano elevado.");
+                } else if (this instanceof Arqueiro) {
+                    System.out.println("[TIRO DUPLO]: Ataca 2 vezes.");
+                } else {
+                    continue;
+                }
+                System.out.println("(Só pode ser usada 1 vez por batalha)");
+
+                // confirmação
+                String confirmaHabilidade;
+                while (true) {
+                    System.out.print("Deseja usar esta habilidade? (s/n): ");
+                    confirmaHabilidade = leitor.nextLine().trim().toLowerCase();
+                    if (confirmaHabilidade.equals("s") || confirmaHabilidade.equals("n")) break;
+                }
+
+                // "n" volta e n gasta turno
+                if (confirmaHabilidade.equals("n")) {
+                    System.out.println();
+                    continue;
+                }
+
+                // "s" usa
+                this.usarHabilidadeEspecial(inimigo);
+                this.habilidadeUsadaNestaBatalha = true;
 
             } else if (escolha == 3) {
+                String listaDeItens = this.inventario.listarItens();
+
+                // se estiver vazio volta
+                if (listaDeItens.equals("Inventário está vazio.\n")) {
+                    continue;
+                }
+
+                System.out.println(listaDeItens);
+                System.out.print("Digite o número do item para usar (0 para voltar): ");
+
+                int escolhaItem = -1;
+                try {
+                    escolhaItem = Integer.parseInt(leitor.nextLine().trim());
+                } catch (Exception ignored) {}
+
+                if (escolhaItem == 0) {
+                    continue;
+                }
+
+                Item itemParaUsar = this.inventario.get(escolhaItem - 1);
+
+                if (itemParaUsar == null) {
+                    System.out.println("Opção inválida.\n");
+                    continue;
+                }
+
+                // usa item e perde o turno
+                System.out.println("\n" + this.nome + " usou " + itemParaUsar.getNome() + "!");
+                // chama o métod0 'usar'
+                itemParaUsar.usar(this);
+                this.inventario.removerItem(itemParaUsar, 1);
+                System.out.println();
+
+            } else if (escolha == 4) {
                 // lógica de fuga
                 if (inimigo instanceof Boss) {
                     System.out.println("\nVocê não pode fugir de um Boss.");
@@ -99,7 +173,6 @@ public abstract class Personagem {
                     continue;
                 }
 
-                // Vamos ajustar o texto:
                 System.out.println("\n[AVISO] Tentar fugir é arriscado!");
                 System.out.println("   Você precisa tirar 18 ou mais em um d20 para conseguir.");
                 System.out.println("   • Sucesso = escapa e ganha 35 XP.");
@@ -113,7 +186,7 @@ public abstract class Personagem {
                 }
 
                 if (confirmaFuga.equals("n")) {
-                    System.out.println("Você não se arrisca.\n");
+                    System.out.println();
                     continue;
                 }
 
@@ -121,11 +194,11 @@ public abstract class Personagem {
                 System.out.println();
                 if (tentarFugir()) {
                     System.out.println("Parabéns, você conseguiu fugir!");
-
                     int xpGanho = 35;
                     System.out.println(this.nome + " ganhou " + xpGanho + " XP!");
                     this.ganharXp(xpGanho);
-                    return true; // fim da a batalha
+                    this.Defesa = defesaOriginalBatalha;
+                    return true;
                 } else {
                     System.out.println("A fuga falhou! Você perdeu o turno.");
                 }
@@ -137,7 +210,7 @@ public abstract class Personagem {
             if (inimigo.estaVivo) {
                 System.out.println("\n--- Turno do " + inimigo.nome + " ---");
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1200);
                 } catch (InterruptedException e) {
                     // ignora
                 }
@@ -145,8 +218,9 @@ public abstract class Personagem {
                 System.out.println();
             }
         }
+        this.Defesa = defesaOriginalBatalha; // voltar defesa normal (guerreiro habilidade)
 
-        // fim da Batalha
+        // fim da batalha
         if (this.estaVivo) {
             System.out.println("\nVOCÊ VENCEU A BATALHA!");
 
@@ -162,46 +236,45 @@ public abstract class Personagem {
             this.ganharXp(xpGanho);
             return true;
         } else {
-            System.out.println("\nVOCÊ FOI DERROTADO.");
+            System.out.println("VOCÊ FOI DERROTADO.");
             return false;
         }
     }
 
-    //Lógica de ataque
+    // lógica de ataque
     public void atacar(Personagem oponente) {
         int rolagem = Dado.rolar(20);
         System.out.println("--- Ataque ---");
-        System.out.println(this.nome + " rolou d" + rolagem + "!");
+        System.out.println(this.nome + " tirou " + rolagem + " no d20!");
 
         if (rolagem == 1) {
-            System.out.println("FALHA CRÍTICA!!! " + this.nome + " errou o ataque completamente.");
+            System.out.println("FALHA CRÍTICA!!! " + this.nome + " errou completamente.");
             return;
         }
 
-        if (rolagem == 20) {
-            System.out.println("ACERTO CRÍTICO!");
+        if (rolagem >= 18) {
             int danoCritico = this.ataque + 10;
             oponente.receberDano(danoCritico);
-            System.out.println(this.nome + " causou " + danoCritico + " de dano crítico!");
+            System.out.println("ACERTO CRÍTICO!!! " + this.nome + " causou " + danoCritico + " de dano.");
             return;
         }
 
         int forcaAtaque = this.ataque + rolagem;
-        System.out.println(this.nome + " teve força de ataque: " + forcaAtaque);
+        System.out.println(this.nome + " força de ataque: " + forcaAtaque);
 
         if (forcaAtaque > oponente.Defesa) {
             int dano = forcaAtaque - oponente.Defesa;
             oponente.receberDano(dano);
             System.out.println(this.nome + " causou " + dano + " de dano!");
         } else {
-            System.out.println(this.nome + " errou o ataque (Defesa do oponente: " + oponente.Defesa + ")");
+            System.out.println(this.nome + " errou o ataque (Sua defesa é: " + oponente.Defesa + ")");
         }
     }
 
-    // lógica para tentar fugir
+    // lógica para fugir
     private boolean tentarFugir() {
         int rolagem = Dado.rolar(20);
-        System.out.println(this.nome + " rolou " + rolagem + " para tentar fugir (precisa de 18+).");
+        System.out.println(this.nome + " tirou " + rolagem + " no d20!");
         return (rolagem >= 18);
     }
 
@@ -215,20 +288,19 @@ public abstract class Personagem {
         }
     }
 
-    // lógica para curar vida
+    // lógica para curar
         public void curar(int valor) {
         this.setPontosVida(this.pontosVida + valor);
-            System.out.println(this.nome + " recuperou " + valor + " de HP! [HP: " + this.pontosVida + "/" + this.maxPontosVida + "]");
+            System.out.println(this.nome + " curou +" + valor + " [HP: " + this.pontosVida + "/" + this.maxPontosVida + "]");
         }
 
-    // adiciona XP ao personagem e verifica se ele subiu de nível. param quantidade A quantidade de XP ganho
+    // lógica para adicionar xp
     public void ganharXp(int quantidade) {
         this.xpAtual += quantidade;
-        System.out.println(this.nome + " está com " + this.xpAtual + "/" + this.xpParaProximoNivel + " XP.");
         checarSeSubiuDeNivel();
     }
 
-    // XP atual e o xp necessário para subir de nível
+    // xp necessário para upar
     private void checarSeSubiuDeNivel() {
         while (this.xpAtual >= this.xpParaProximoNivel) {
             this.xpAtual -= this.xpParaProximoNivel;
@@ -236,29 +308,26 @@ public abstract class Personagem {
         }
     }
 
-
-    // aplica os bônus de status e cura ao subir de nível
+    // bônus e cura ao upar
     public void subirNivel() {
         this.nivel++;
         System.out.println("\n--- LEVEL UP! ---");
         System.out.println(this.nome + " subiu para o nível " + this.nivel + "!");
 
-        // aumentar atributos
-        int bonusVida = 40;
+        int bonusVida = 30;
         int bonusAtaque = 10;
-        int bonusDefesa = 8;
+        int bonusDefesa = 5;
 
         this.maxPontosVida += bonusVida;
         this.ataque += bonusAtaque;
         this.Defesa += bonusDefesa;
 
-        System.out.println("Vida Máxima: +" + bonusVida + " (Total: " + this.maxPontosVida + ")");
-        System.out.println("Ataque: +" + bonusAtaque + " (Total: " + this.ataque + ")");
-        System.out.println("Defesa: +" + bonusDefesa + " (Total: " + this.Defesa + ")");
+        System.out.println("Vida Máxima: +" + bonusVida);
+        System.out.println("Ataque: +" + bonusAtaque);
+        System.out.println("Defesa: +" + bonusDefesa);
 
-        // curar
-        this.curar(50);
-        System.out.println("-----------------\n");
+        this.curar(80);
+        System.out.println("-----------------");
     }
 
     @Override

@@ -8,7 +8,4 @@ public class Boss extends Inimigo {
         // construtor da classe pai (Inimigo)
         super(nome, nivel, hp, ataque, defesa);
     }
-
-    // talvez adicionar um métod0 aqui (Habilidade)
-    // public void ...() { ... }
 }
