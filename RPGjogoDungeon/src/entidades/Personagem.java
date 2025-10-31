@@ -13,7 +13,7 @@ public abstract class Personagem {
     protected int pontosVida;
     protected int maxPontosVida;
     protected int ataque;
-    protected int Defesa;
+    public int Defesa;
     protected int nivel;
     protected Inventario inventario;
     protected boolean estaVivo;
@@ -89,7 +89,7 @@ public abstract class Personagem {
 
             } else if (escolha == 2) {
                 System.out.println(this.inventario.listarItens());
-                System.out.println("Funcionalidade 'Usar Item' ainda não implementada.");
+
 
             } else if (escolha == 3) {
                 // lógica de fuga
@@ -215,6 +215,11 @@ public abstract class Personagem {
         }
     }
 
+    // lógica para curar vida
+        public void curar(int valor) {
+        this.setPontosVida(this.pontosVida + valor);
+            System.out.println(this.nome + " recuperou " + valor + " de HP! [HP: " + this.pontosVida + "/" + this.maxPontosVida + "]");
+        }
 
     // adiciona XP ao personagem e verifica se ele subiu de nível. param quantidade A quantidade de XP ganho
     public void ganharXp(int quantidade) {
@@ -239,9 +244,9 @@ public abstract class Personagem {
         System.out.println(this.nome + " subiu para o nível " + this.nivel + "!");
 
         // aumentar atributos
-        int bonusVida = 15;
-        int bonusAtaque = 5;
-        int bonusDefesa = 3;
+        int bonusVida = 40;
+        int bonusAtaque = 10;
+        int bonusDefesa = 8;
 
         this.maxPontosVida += bonusVida;
         this.ataque += bonusAtaque;
@@ -252,10 +257,7 @@ public abstract class Personagem {
         System.out.println("Defesa: +" + bonusDefesa + " (Total: " + this.Defesa + ")");
 
         // curar
-        int cura = 50;
-        this.setPontosVida(this.pontosVida + cura);
-
-        System.out.println(this.nome + " curou +50 pontos de vida! [HP: " + this.pontosVida + "/" + this.maxPontosVida + "]");
+        this.curar(50);
         System.out.println("-----------------\n");
     }
 

@@ -71,7 +71,7 @@ public class Jogo {
         System.out.println("\n\"E qual é a sua classe?\"");
         System.out.println("(1) Guerreiro -> (Habilidade: ataque penetrante) (HP Alto, Defesa Alta, Ataque Baixo)");
         System.out.println("(2) Mago -> (Habilidade: ataque de veneno) (HP Baixo, Defesa Baixa, Ataque Alto)");
-        System.out.println("(3) Arqueiro -> (Habilidade: ataque dublo) (HP Médio, Defesa Médio, Ataque Médio)");
+        System.out.println("(3) Arqueiro -> (Habilidade: ataque duplo) (HP Médio, Defesa Médio, Ataque Médio)");
 
         int classeEscolha = 0;
         while (classeEscolha < 1 || classeEscolha > 3) {
@@ -108,7 +108,7 @@ public class Jogo {
                 if (andar == 5) {
                     boss = new Boss("Guardião da Dungeon", 5, 200, 15, 10);
                 } else {
-                    boss = new Boss("SENHOR DA DUNGEON", 10, 500, 25, 15);
+                    boss = new Boss("SENHOR DA DUNGEON", 10, 400, 25, 15);
                 }
 
                 boolean vitoria = jogador.batalhar(boss);
@@ -126,7 +126,7 @@ public class Jogo {
                 jogador.setPontosVida(jogador.getMaxPontosVida());
 
                 System.out.println("Você também encontra uma Poção de Cura.");
-                jogador.getInventario().adicionar(new Item("Poção de Cura", "Cura 50 HP", "cura_50", 1));
+                //jogador.getInventario().adicionar(new Item("Poção de Cura", "Cura 50 HP", "cura_50", 1));
                 System.out.println("Agora que você recuperou as suas forças, está pronto para enfrentar o Boss final!");
 
             } else {

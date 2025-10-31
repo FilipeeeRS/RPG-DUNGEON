@@ -1,59 +1,46 @@
 package itens;
 
-public class Item implements Comparable<Item> {
+import entidades.Personagem;
+
+public abstract class Item implements Comparable<Item> {
 
     private String nome;
     private String descricao;
-    private String efeito;
-    private int quantidade;
+    protected int quantidade;
 
-    public Item(String nome, String descricao, String efeito, int quantidade) {
-        // Implementar
+    public Item(String nome, String descricao, int quantidade) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.quantidade = quantidade;
     }
 
-    // --- Getters ---
     public String getNome() {
-        return null;
+        return nome;
     }
-
-    public String getDescricao() {
-        return null;
-    }
-
-    public String getEfeito() {
-        return null;
-    }
-
     public int getQuantidade() {
-        return 0;
+        return quantidade;
     }
+    public void adicionarQuantidade(int q) {this.quantidade += q;}
+    public void removerQuantidade(int q) {this.quantidade -= q;}
 
-    // --- Setters ---
-    public void setQuantidade(int quantidade) {
-        // Implementar
-    }
+    public abstract void usar(Personagem alvo);
+
+    public abstract Item clone();
 
     @Override
     public boolean equals(Object obj) {
-        // Implementar
-        return false;
+        if (!(obj instanceof Item)) return false;
+        return this.nome.equalsIgnoreCase(((Item)obj).nome);
     }
 
     @Override
     public int compareTo(Item outroItem) {
-        // Implementar
-        return 0;
+        return this.nome.compareToIgnoreCase(outroItem.nome);
     }
 
-    @Override
-    public int hashCode() {
-        // Implementar
-        return 0;
-    }
 
     @Override
     public String toString() {
-        // Implementar
-        return "Item";
+        return nome + " (x" + quantidade + ") - " + descricao;
     }
 }
