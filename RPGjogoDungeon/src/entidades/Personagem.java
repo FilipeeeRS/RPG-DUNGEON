@@ -161,8 +161,18 @@ public abstract class Personagem {
                 // usa item e perde o turno
                 System.out.println("\n" + this.nome + " usou " + itemParaUsar.getNome() + "!");
                 // chama o métod0 'usar'
-                itemParaUsar.usar(this);
-                this.inventario.removerItem(itemParaUsar, 1);
+                // Se for granada → usa no inimigo
+                if (itemParaUsar instanceof itens.Granada) {
+                    itemParaUsar.usar(inimigo);
+                }
+                // Se for poção ou escudo → usa no jogador
+                else {
+                    itemParaUsar.usar(this);
+                }
+
+                this.inventario.remover(itemParaUsar, 1);
+
+                this.inventario.remover(itemParaUsar, 1);
                 System.out.println();
 
             } else if (escolha == 4) {
