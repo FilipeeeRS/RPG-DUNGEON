@@ -134,44 +134,52 @@ public abstract class Personagem {
             } else if (escolha == 3) {
                 String listaDeItens = this.inventario.listarItens();
 
-                // se estiver vazio volta
-                if (listaDeItens.equals("Inventário está vazio.\n")) {
+                // inventário vazio
+                if (listaDeItens.equals("\nInventário vazio.\n")) {
+                    System.out.println(listaDeItens);
                     continue;
                 }
 
+                // lista de itens
                 System.out.println(listaDeItens);
-                System.out.print("Digite o número do item para usar (0 para voltar): ");
 
                 int escolhaItem = -1;
-                try {
-                    escolhaItem = Integer.parseInt(leitor.nextLine().trim());
-                } catch (Exception ignored) {}
+                Item itemParaUsar = null;
 
-                if (escolhaItem == 0) {
-                    continue;
+                // loop para digitar certo
+                while (true) {
+                    System.out.print("Digite o número do item para usar (0 para voltar): ");
+                    try {
+                        escolhaItem = Integer.parseInt(leitor.nextLine().trim());
+                    } catch (Exception ignored) {
+                        continue;
+                    }
+                    if (escolhaItem == 0) {
+                        System.out.println();
+                        break;
+                    }
+                    itemParaUsar = this.inventario.get(escolhaItem - 1);
+                    if (itemParaUsar != null) {
+                        break;
+                    }
                 }
-
-                Item itemParaUsar = this.inventario.get(escolhaItem - 1);
-
-                if (itemParaUsar == null) {
-                    System.out.println("Opção inválida.\n");
+                if (escolhaItem == 0) {
                     continue;
                 }
 
                 // usa item e perde o turno
                 System.out.println("\n" + this.nome + " usou " + itemParaUsar.getNome() + "!");
-                // chama o métod0 'usar'
-                // Se for granada → usa no inimigo
+
+                // Se for granada usa no inimigo
                 if (itemParaUsar instanceof itens.Granada) {
                     itemParaUsar.usar(inimigo);
                 }
-                // Se for poção ou escudo → usa no jogador
+                // Se for poção ou escudo usa no jogador
                 else {
                     itemParaUsar.usar(this);
                 }
 
-                this.inventario.removerItem(itemParaUsar, 1);
-
+                // remove o item
                 this.inventario.removerItem(itemParaUsar, 1);
                 System.out.println();
 

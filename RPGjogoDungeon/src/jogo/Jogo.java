@@ -72,7 +72,7 @@ public class Jogo {
     public static void criarPersonagem() {
         System.out.println("\n\"Esqueci de perguntar, qual é o seu nome?\"");
         String nomeJogador = "";
-        // loop para ficar vazio se apertar enter
+        // loop se vazio, apertar enter
         while(nomeJogador.trim().isEmpty()) {
             System.out.print("Digite seu nome: ");
             nomeJogador = leitor.nextLine();
@@ -126,12 +126,12 @@ public class Jogo {
                     System.out.println("É o Guardião da Dungeon, o soldado mais poderoso e leal ao Mestre!");
                     pausar();
                     System.out.println();
-                    boss = new Boss("Guardião da Dungeon", 5, 250, 15, 10);
+                    boss = new Boss("Guardião da Dungeon", 5, 200, 15, 10);
                 } else {
                     System.out.println("É ele... finalmente você encontra o temido \"SENHOR DA DUNGEON\"!");
                     pausar();
                     System.out.println();
-                    boss = new Boss("SENHOR DA DUNGEON", 10, 500, 25, 15);
+                    boss = new Boss("SENHOR DA DUNGEON", 10, 450, 25, 15);
                 }
 
                 boolean vitoria = jogador.batalhar(boss);
@@ -149,10 +149,6 @@ public class Jogo {
                 // cura máxima
                 jogador.setPontosVida(jogador.getMaxPontosVida());
 
-                System.out.println("Você também encontra uma Poção de Cura.");
-                //jogador.getInventario().adicionar(new Item("Poção de Cura", "Cura 50 HP", "cura_50", 1));
-                //TODO TODO TODO
-
             } else {
                 // 2 caminhos lógica
                 System.out.println("Você vê dois corredores idênticos. Qual você escolhe?");
@@ -169,18 +165,18 @@ public class Jogo {
                 // rola um d100 / 80% chance de inimigo / 20% chance de descanso
                 int rolagemEvento = Dado.rolar(100);
 
+                // inimigo 80%
                 if (rolagemEvento <= 80) {
-                    // inimigo 80%
                     System.out.println("\nUm Inimigo aparece das sombras!");
                     Inimigo goblin = new Inimigo("Goblin", andar, 50 + (andar * 5), 8, 5);
                     boolean venceu = jogador.batalhar(goblin);
-                    if (!venceu) break; // morreu → fim do jogo
+                    if (!venceu) break; // morreu
 
                     // 35% de chance de vir baú após vitoria
                     int chanceBau = Dado.rolar(100); // 1 a 100
 
-                    if (chanceBau <= 35) { // 35% de chance
-                        System.out.println("\n O inimigo deixou cair um BAÚ!");
+                    if (chanceBau <= 50) { // 35% de chance
+                        System.out.println("\nO inimigo deixou cair um algo!");
 
                         int sorteioItem = Dado.rolar(3); // 1,2,3
 
@@ -194,15 +190,13 @@ public class Jogo {
                             jogador.getInventario().adicionarItem(new Escudo(1));
                             System.out.println("Você encontrou: Escudo x1!");
                         }
-
-                        System.out.println("Item adicionado ao seu inventário!\n");
+                        System.out.println("Acicionado ao seu inventário!");
                     } else {
-                        System.out.println("\nO inimigo não deixou nada para trás.\n");
+                        System.out.println("\nO inimigo não deixou nada para trás.");
                     }
 
-
+                // descanso 20%
                 } else if (rolagemEvento <= 100) { // 80 + 20 = 100
-                    // descanso 20%
                     System.out.println("\nÉ uma fonte de descanso! Você foi curado. +100 HP +" + xpPorEvento + " XP!");
                     int cura = 100;
                     jogador.setPontosVida(jogador.getPontosVida() + cura);
@@ -214,7 +208,7 @@ public class Jogo {
             // verifica se o jogador morreu
             if (!jogador.isEstaVivo()) {
                 System.out.println("Sua jornada termina aqui...");
-                break; // Sai do loop 'for'
+                break;
             }
 
             // não executa se zerou

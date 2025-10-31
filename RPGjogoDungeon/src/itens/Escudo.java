@@ -14,7 +14,7 @@ public class Escudo extends Item {
     public void usar(Personagem alvo) {
         alvo.Defesa += defesaExtra;
         removerQuantidade(1);
-        System.out.println(alvo.getNome() + " equipou escudo! Defesa atual: " + alvo.Defesa);
+        System.out.print(alvo.getNome() + " equipou escudo! Defesa atual: " + alvo.Defesa);
     }
 
     @Override

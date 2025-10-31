@@ -4,17 +4,17 @@ import entidades.Personagem;
 
 public class Granada extends Item {
 
-    private int dano = 25;
+    private int dano = 30;
 
     public Granada(int quantidade) {
-        super("Granada", "Explode causando 25 de dano direto.", quantidade);
+        super("Granada", "Explode causando 30 de dano direto.", quantidade);
     }
 
     @Override
     public void usar(Personagem alvo) {
         alvo.receberDano(dano);
         removerQuantidade(1);
-        System.out.println("A granada explodiu causando " + dano + " de dano!");
+        System.out.print("A granada explodiu causando " + dano + " de dano!");
     }
 
     @Override

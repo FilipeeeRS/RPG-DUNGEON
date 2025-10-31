@@ -10,7 +10,7 @@ public class Inventario {
         this.itens = new ArrayList<>();
     }
 
-    // Construtor de copia
+    // construtor de copia
     public Inventario(Inventario inicial) {
         this.itens = new ArrayList<>();
         for (Item item : inicial.itens) {
@@ -20,7 +20,8 @@ public class Inventario {
 
     public void adicionarItem(Item novoItem) {
         for (Item item : itens) {
-            if (item.equals(novoItem)) {    // verifica se ja tem o item no inventario
+            // verifica se ja tem o item no inventario
+            if (item.equals(novoItem)) {
                 item.adicionarQuantidade(novoItem.getQuantidade());
                 return;
             }
@@ -28,7 +29,7 @@ public class Inventario {
         itens.add(novoItem); // se nao tinha, adiciona o novo item no inventario
     }
 
-    // Remove quantidade. Se zerar, remove o item da lista
+    // remove quantidade. Se zerar, remove o item da lista
     public void removerItem(Item item, int quantidade) {
         for (int i = 0; i < itens.size(); i++) {
             if (itens.get(i).equals(item)) {
@@ -50,7 +51,7 @@ public class Inventario {
         if(itens.isEmpty()) {
             return "\nInventário vazio.";
         }
-        StringBuilder sb = new StringBuilder("\n--- INVENTÁRIO ---");
+        StringBuilder sb = new StringBuilder("\n--- INVENTÁRIO ---\n");
         for (int i = 0; i < itens.size(); i++) {
             sb.append("(").append(i + 1).append(") ").append(itens.get(i).toString()).append("\n");
         }
