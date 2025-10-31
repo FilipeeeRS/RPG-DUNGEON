@@ -4,6 +4,10 @@ import entidades.*;
 import itens.Item;
 import java.util.Scanner;
 import utilidades.Dado;
+import itens.HealPot;
+import itens.Granada;
+import itens.Escudo;
+
 
 public class Jogo {
 
@@ -162,28 +166,48 @@ public class Jogo {
                     } catch (Exception ignored) {}
                 }
 
-                // rola um d100 / 60% chance de inimigo / 25% chance de baú / 15% chance de descanso
+                // rola um d100 / 80% chance de inimigo / 20% chance de descanso
                 int rolagemEvento = Dado.rolar(100);
 
-                if (rolagemEvento <= 65) {
-                    // inimigo 65%
+                if (rolagemEvento <= 80) {
+                    // inimigo 80%
                     System.out.println("\nUm Inimigo aparece das sombras!");
                     Inimigo goblin = new Inimigo("Goblin", andar, 50 + (andar * 5), 8, 5);
-                    if (!jogador.batalhar(goblin)) break; // Fim de jogo
+                    boolean venceu = jogador.batalhar(goblin);
+                    if (!venceu) break; // morreu → fim do jogo
 
-                } else if (rolagemEvento <= 85) { // 65 + 20 = 85
+                    // 35% de chance de vir baú após vitoria
+                    int chanceBau = Dado.rolar(100); // 1 a 100
+
+                    if (chanceBau <= 35) { // 35% de chance
+                        System.out.println("\n O inimigo deixou cair um BAÚ!");
+
+                        int sorteioItem = Dado.rolar(3); // 1,2,3
+
+                        if (sorteioItem == 1) {
+                            jogador.getInventario().adicionarItem(new HealPot(1));
+                            System.out.println("Você encontrou: Poção de Cura x1!");
+                        } else if (sorteioItem == 2) {
+                            jogador.getInventario().adicionarItem(new Granada(1));
+                            System.out.println("Você encontrou: Granada x1!");
+                        } else {
+                            jogador.getInventario().adicionarItem(new Escudo(1));
+                            System.out.println("Você encontrou: Escudo x1!");
+                        }
+
+                        System.out.println("Item adicionado ao seu inventário!\n");
+                    } else {
+                        System.out.println("\nO inimigo não deixou nada para trás.\n");
+                    }
+
+
+                } else if (rolagemEvento <= 100) { // 80 + 20 = 100
                     // descanso 20%
                     System.out.println("\nÉ uma fonte de descanso! Você foi curado. +100 HP +" + xpPorEvento + " XP!");
                     int cura = 100;
                     jogador.setPontosVida(jogador.getPontosVida() + cura);
                     jogador.ganharXp(xpPorEvento);
 
-                } else {
-                    // baú 15%
-                    System.out.println("\nVocê tropeça em algo... é um baú!!! Que sortudo. +" + xpPorEvento + " XP!");
-                    System.out.println("Você encontrou X!");
-                    //encontrarBau(); TODO
-                    jogador.ganharXp(xpPorEvento);
                 }
             }
 

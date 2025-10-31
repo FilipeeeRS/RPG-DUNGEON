@@ -161,7 +161,17 @@ public abstract class Personagem {
                 // usa item e perde o turno
                 System.out.println("\n" + this.nome + " usou " + itemParaUsar.getNome() + "!");
                 // chama o métod0 'usar'
-                itemParaUsar.usar(this);
+                // Se for granada → usa no inimigo
+                if (itemParaUsar instanceof itens.Granada) {
+                    itemParaUsar.usar(inimigo);
+                }
+                // Se for poção ou escudo → usa no jogador
+                else {
+                    itemParaUsar.usar(this);
+                }
+
+                this.inventario.removerItem(itemParaUsar, 1);
+
                 this.inventario.removerItem(itemParaUsar, 1);
                 System.out.println();
 
@@ -289,10 +299,10 @@ public abstract class Personagem {
     }
 
     // lógica para curar
-        public void curar(int valor) {
+    public void curar(int valor) {
         this.setPontosVida(this.pontosVida + valor);
-            System.out.println(this.nome + " curou +" + valor + " [HP: " + this.pontosVida + "/" + this.maxPontosVida + "]");
-        }
+        System.out.println(this.nome + " curou +" + valor + " [HP: " + this.pontosVida + "/" + this.maxPontosVida + "]");
+    }
 
     // lógica para adicionar xp
     public void ganharXp(int quantidade) {
