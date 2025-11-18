@@ -34,6 +34,11 @@ public abstract class Item implements Comparable<Item> {
     }
 
     @Override
+    public int hashCode() {
+        return this.nome.toLowerCase().hashCode();
+    }
+
+    @Override
     public int compareTo(Item outroItem) {
         return this.nome.compareToIgnoreCase(outroItem.nome);
     }
